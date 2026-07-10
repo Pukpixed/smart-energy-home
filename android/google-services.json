@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "585897514589",
+    "project_id": "smart-energy-home-fd036",
+    "storage_bucket": "smart-energy-home-fd036.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:585897514589:android:9089c5eb0a0da545e7dfb4",
+        "android_client_info": {
+          "package_name": "com.example.smart_energy_home"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "585897514589-o6hj56lcg64jrjeehgrlln0f82q19mb6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDW86s24m66-jkpbr9iwpHxsKINb-3dicE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "585897514589-o6hj56lcg64jrjeehgrlln0f82q19mb6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "585897514589-40l21ao3rfl2eotrvuouchflnsnhfd08.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.smartEnergyHome"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:585897514589:android:9b12f9e4263fbecae7dfb4",
+        "android_client_info": {
+          "package_name": "com.joy.smartenergyhome"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "585897514589-o6hj56lcg64jrjeehgrlln0f82q19mb6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDW86s24m66-jkpbr9iwpHxsKINb-3dicE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "585897514589-o6hj56lcg64jrjeehgrlln0f82q19mb6.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "585897514589-40l21ao3rfl2eotrvuouchflnsnhfd08.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.smartEnergyHome"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
