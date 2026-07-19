@@ -7,7 +7,8 @@ class FirebaseService {
 
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  /// Create
+  // เพิ่มข้อมูล
+
   Future<void> addData({
     required String collection,
     required Map<String, dynamic> data,
@@ -15,20 +16,24 @@ class FirebaseService {
     await firestore.collection(collection).add(data);
   }
 
-  /// Read
+  // อ่านข้อมูล
+
   Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> getData(
       String collection) async {
     final snapshot = await firestore.collection(collection).get();
+
     return snapshot.docs;
   }
 
-  /// Stream
+  // Realtime Stream
+
   Stream<QuerySnapshot<Map<String, dynamic>>> streamCollection(
       String collection) {
     return firestore.collection(collection).snapshots();
   }
 
-  /// Update
+  // แก้ไขข้อมูล
+
   Future<void> updateData({
     required String collection,
     required String documentId,
@@ -37,7 +42,8 @@ class FirebaseService {
     await firestore.collection(collection).doc(documentId).update(data);
   }
 
-  /// Delete
+  // ลบข้อมูล
+
   Future<void> deleteData({
     required String collection,
     required String documentId,

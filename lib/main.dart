@@ -10,6 +10,7 @@ import 'providers/device_provider.dart';
 import 'providers/energy_provider.dart';
 import 'providers/notification_provider.dart';
 import 'providers/report_provider.dart';
+import 'providers/mqtt_provider.dart';
 
 import 'screens/auth/welcome_screen.dart';
 import 'screens/dashboard/dashboard_screen.dart';
@@ -21,21 +22,44 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(const SmartEnergyApp());
+  runApp(
+    const SmartEnergyApp(),
+  );
 }
 
 class SmartEnergyApp extends StatelessWidget {
-  const SmartEnergyApp({super.key});
+  const SmartEnergyApp({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => DeviceProvider()),
-        ChangeNotifierProvider(create: (_) => EnergyProvider()),
-        ChangeNotifierProvider(create: (_) => NotificationProvider()),
-        ChangeNotifierProvider(create: (_) => ReportProvider()),
+        ChangeNotifierProvider(
+          create: (_) => AuthProvider(),
+        ),
+
+        ChangeNotifierProvider(
+          create: (_) => DeviceProvider(),
+        ),
+
+        ChangeNotifierProvider(
+          create: (_) => EnergyProvider(),
+        ),
+
+        ChangeNotifierProvider(
+          create: (_) => NotificationProvider(),
+        ),
+
+        ChangeNotifierProvider(
+          create: (_) => ReportProvider(),
+        ),
+
+        // MQTT
+        ChangeNotifierProvider(
+          create: (_) => MQTTProvider(),
+        ),
       ],
       child: ScreenUtilInit(
         designSize: const Size(390, 844),
@@ -58,9 +82,10 @@ class SmartEnergyApp extends StatelessWidget {
   }
 }
 
-/// ตรวจสอบสถานะการ Login
 class AuthGate extends StatelessWidget {
-  const AuthGate({super.key});
+  const AuthGate({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +100,12 @@ class AuthGate extends StatelessWidget {
         }
 
         if (auth.user != null) {
+          final mqtt = context.read<MQTTProvider>();
+
+          if (!mqtt.connected) {
+            mqtt.connectMQTT();
+          }
+
           return const DashboardScreen();
         }
 

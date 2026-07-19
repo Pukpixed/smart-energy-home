@@ -9,7 +9,7 @@ class AuthProvider extends ChangeNotifier {
   final AuthService _authService = AuthService();
 
   User? _user;
-  bool _loading = true;
+  bool _loading = false;
 
   User? get user => _user;
   bool get loading => _loading;
@@ -28,9 +28,9 @@ class AuthProvider extends ChangeNotifier {
   }
 
   /// ============================
-  /// Login ด้วย Email
+  /// Login
   /// ============================
-  Future<void> login(
+  Future<String> login(
     String email,
     String password,
   ) async {
@@ -38,7 +38,10 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _authService.login(email, password);
+      return await _authService.login(
+        email,
+        password,
+      );
     } finally {
       _loading = false;
       notifyListeners();
@@ -46,9 +49,10 @@ class AuthProvider extends ChangeNotifier {
   }
 
   /// ============================
-  /// สมัครสมาชิก
+  /// Register
   /// ============================
   Future<void> register(
+    String name,
     String email,
     String password,
   ) async {
@@ -56,7 +60,11 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _authService.register(email, password);
+      await _authService.register(
+        name,
+        email,
+        password,
+      );
     } finally {
       _loading = false;
       notifyListeners();
@@ -64,14 +72,14 @@ class AuthProvider extends ChangeNotifier {
   }
 
   /// ============================
-  /// Login ด้วย Google
+  /// Login Google
   /// ============================
-  Future<void> signInWithGoogle() async {
+  Future<String> signInWithGoogle() async {
     _loading = true;
     notifyListeners();
 
     try {
-      await _authService.signInWithGoogle();
+      return await _authService.signInWithGoogle();
     } finally {
       _loading = false;
       notifyListeners();
@@ -91,6 +99,15 @@ class AuthProvider extends ChangeNotifier {
       _loading = false;
       notifyListeners();
     }
+  }
+
+  /// ============================
+  /// Refresh User
+  /// ============================
+  Future<void> reloadUser() async {
+    await _user?.reload();
+    _user = _authService.currentUser;
+    notifyListeners();
   }
 
   @override

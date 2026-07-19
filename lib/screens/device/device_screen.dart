@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/device_provider.dart';
+import '../../models/device_model.dart';
 
 class DeviceScreen extends StatefulWidget {
   const DeviceScreen({super.key});
@@ -11,53 +12,69 @@ class DeviceScreen extends StatefulWidget {
 }
 
 class _DeviceScreenState extends State<DeviceScreen> {
-  final String userId = "userId123";
-
   @override
   void initState() {
     super.initState();
 
     Future.microtask(() {
-      context.read<DeviceProvider>().listenDevices(userId);
+      context.read<DeviceProvider>().fetchDevices();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final devices = context.watch<DeviceProvider>().devices;
+    final provider = context.watch<DeviceProvider>();
+    final List<DeviceModel> devices = provider.devices;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("🔌 Device Control"), centerTitle: true),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: ListView.builder(
-          itemCount: devices.length,
-          itemBuilder: (context, index) {
-            final d = devices[index];
+      appBar: AppBar(
+        title: const Text("Device Control"),
+        centerTitle: true,
+      ),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await provider.fetchDevices();
+        },
+        child: devices.isEmpty
+            ? const Center(
+                child: Text(
+                  "ไม่พบอุปกรณ์",
+                  style: TextStyle(fontSize: 16),
+                ),
+              )
+            : ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: devices.length,
+                itemBuilder: (context, index) {
+                  final device = devices[index];
 
-            return Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+                  return Card(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: ListTile(
+                      leading: Icon(
+                        device.type == "light"
+                            ? Icons.lightbulb
+                            : Icons.electrical_services,
+                        color: device.status ? Colors.green : Colors.grey,
+                      ),
+                      title: Text(device.name),
+                      subtitle: Text(
+                        "${device.room}\nPower : ${device.power.toStringAsFixed(2)} W",
+                      ),
+                      isThreeLine: true,
+                      trailing: Switch(
+                        value: device.status,
+                        onChanged: (_) async {
+                          await provider.toggleDevice(device);
+                        },
+                      ),
+                    ),
+                  );
+                },
               ),
-              child: ListTile(
-                leading: Icon(
-                  d.type == "light"
-                      ? Icons.lightbulb
-                      : Icons.electrical_services,
-                  color: d.status ? Colors.green : Colors.grey,
-                ),
-                title: Text(d.name),
-                subtitle: Text("Power: ${d.power} W"),
-                trailing: Switch(
-                  value: d.status,
-                  onChanged: (value) {
-                    context.read<DeviceProvider>().toggleDevice(d.id, value);
-                  },
-                ),
-              ),
-            );
-          },
-        ),
       ),
     );
   }

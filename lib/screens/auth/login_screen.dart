@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/auth_provider.dart';
+import '../admin/admin_dashboard_screen.dart';
 import '../dashboard/dashboard_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -139,19 +140,29 @@ class _LoginScreenState extends State<LoginScreen> {
                           ? null
                           : () async {
                               try {
-                                await auth.login(
+                                final role = await auth.login(
                                   emailController.text.trim(),
                                   passwordController.text,
                                 );
 
                                 if (!mounted) return;
 
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => const DashboardScreen(),
-                                  ),
-                                );
+                                if (role == "admin") {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) =>
+                                          const AdminDashboardScreen(),
+                                    ),
+                                  );
+                                } else {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const DashboardScreen(),
+                                    ),
+                                  );
+                                }
                               } catch (e) {
                                 if (!mounted) return;
 
@@ -194,16 +205,26 @@ class _LoginScreenState extends State<LoginScreen> {
                             ? null
                             : () async {
                                 try {
-                                  await auth.signInWithGoogle();
+                                  final role = await auth.signInWithGoogle();
 
                                   if (!mounted) return;
 
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => const DashboardScreen(),
-                                    ),
-                                  );
+                                  if (role == "admin") {
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) =>
+                                            const AdminDashboardScreen(),
+                                      ),
+                                    );
+                                  } else {
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => const DashboardScreen(),
+                                      ),
+                                    );
+                                  }
                                 } catch (e) {
                                   if (!mounted) return;
 

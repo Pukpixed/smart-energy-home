@@ -5,7 +5,7 @@ import '../../providers/auth_provider.dart';
 import '../../providers/device_provider.dart';
 import '../../providers/energy_provider.dart';
 
-import '../../core/utils/user_helper.dart';
+import '../../models/device_model.dart';
 
 import '../device/device_screen.dart';
 import '../energy/energy_screen.dart';
@@ -23,12 +23,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     super.initState();
 
     Future.microtask(() {
-      final uid = UserHelper.uid(context);
+      context.read<EnergyProvider>().fetchEnergyLogs();
 
-      if (uid != null) {
-        context.read<EnergyProvider>().listenEnergy(uid);
-        context.read<DeviceProvider>().listenDevices(uid);
-      }
+      context.read<DeviceProvider>().fetchDevices();
     });
   }
 
@@ -36,37 +33,59 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     final auth = context.watch<AuthProvider>();
 
-    final energy = context.watch<EnergyProvider>().energyList;
-    final devices = context.watch<DeviceProvider>().devices;
+    final energyProvider = context.watch<EnergyProvider>();
 
-    final double total =
-        energy.fold<double>(0.0, (sum, item) => sum + item.value);
+    final deviceProvider = context.watch<DeviceProvider>();
 
-    final double cost = total * 4.2;
+    final energy = energyProvider.energyLogs;
 
-    final int activeDevices = devices.where((device) => device.status).length;
+    final devices = deviceProvider.devices;
+
+    final double totalEnergy = energy.fold(
+      0,
+      (sum, item) => sum + item.energy,
+    );
+
+    final double cost = totalEnergy * 4.2;
+
+    final int activeDevices = devices
+        .where(
+          (device) => device.status,
+        )
+        .length;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Smart Energy Home"),
+        title: const Text(
+          "Smart Energy Home",
+        ),
         centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(Icons.logout),
+            icon: const Icon(
+              Icons.logout,
+            ),
             onPressed: () async {
               await auth.logout();
             },
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await context.read<EnergyProvider>().fetchEnergyLogs();
+
+          await context.read<DeviceProvider>().fetchDevices();
+        },
         child: ListView(
+          padding: const EdgeInsets.all(16),
           children: [
             Card(
               child: ListTile(
                 leading: const CircleAvatar(
-                  child: Icon(Icons.person),
+                  child: Icon(
+                    Icons.person,
+                  ),
                 ),
                 title: Text(
                   auth.user?.displayName ?? "ผู้ใช้งาน",
@@ -79,17 +98,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
             const SizedBox(height: 10),
             Card(
               child: ListTile(
-                leading: const Icon(Icons.bolt),
-                title: const Text("พลังงานที่ใช้"),
+                leading: const Icon(
+                  Icons.bolt,
+                ),
+                title: const Text(
+                  "พลังงานที่ใช้",
+                ),
                 subtitle: Text(
-                  "${total.toStringAsFixed(2)} kWh",
+                  "${totalEnergy.toStringAsFixed(2)} kWh",
                 ),
               ),
             ),
             Card(
               child: ListTile(
-                leading: const Icon(Icons.payments),
-                title: const Text("ค่าไฟประมาณการ"),
+                leading: const Icon(
+                  Icons.payments,
+                ),
+                title: const Text(
+                  "ค่าไฟประมาณการ",
+                ),
                 subtitle: Text(
                   "฿${cost.toStringAsFixed(2)}",
                 ),
@@ -97,8 +124,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             Card(
               child: ListTile(
-                leading: const Icon(Icons.devices),
-                title: const Text("อุปกรณ์ที่เปิดใช้งาน"),
+                leading: const Icon(
+                  Icons.devices,
+                ),
+                title: const Text(
+                  "อุปกรณ์ที่เปิดใช้งาน",
+                ),
                 subtitle: Text(
                   "$activeDevices เครื่อง",
                 ),
@@ -108,8 +139,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
             SizedBox(
               height: 50,
               child: ElevatedButton.icon(
-                icon: const Icon(Icons.show_chart),
-                label: const Text("ดูข้อมูลพลังงาน"),
+                icon: const Icon(
+                  Icons.show_chart,
+                ),
+                label: const Text(
+                  "ดูข้อมูลพลังงาน",
+                ),
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -124,8 +159,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
             SizedBox(
               height: 50,
               child: ElevatedButton.icon(
-                icon: const Icon(Icons.power),
-                label: const Text("ควบคุมอุปกรณ์"),
+                icon: const Icon(
+                  Icons.power,
+                ),
+                label: const Text(
+                  "ควบคุมอุปกรณ์",
+                ),
                 onPressed: () {
                   Navigator.push(
                     context,

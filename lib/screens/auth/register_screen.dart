@@ -12,29 +12,89 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   bool _obscurePassword = true;
-  bool _obscureConfirm = true;
+  bool _obscureConfirmPassword = true;
 
+  final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
 
   @override
   void dispose() {
+    nameController.dispose();
     emailController.dispose();
     passwordController.dispose();
-    confirmController.dispose();
+    confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _register(AuthProvider auth) async {
+    final name = nameController.text.trim();
+    final email = emailController.text.trim();
+    final password = passwordController.text;
+    final confirmPassword = confirmPasswordController.text;
+
+    if (name.isEmpty) {
+      _showMessage("กรุณากรอกชื่อ");
+      return;
+    }
+
+    if (email.isEmpty) {
+      _showMessage("กรุณากรอกอีเมล");
+      return;
+    }
+
+    if (password.length < 6) {
+      _showMessage("รหัสผ่านต้องมีอย่างน้อย 6 ตัว");
+      return;
+    }
+
+    if (password != confirmPassword) {
+      _showMessage("รหัสผ่านไม่ตรงกัน");
+      return;
+    }
+
+    try {
+      await auth.register(
+        name,
+        email,
+        password,
+      );
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("สมัครสมาชิกสำเร็จ"),
+        ),
+      );
+
+      Navigator.pop(context);
+    } catch (e) {
+      if (!mounted) return;
+
+      _showMessage(e.toString());
+    }
+  }
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    const backgroundColor = Color(0xFF071C24);
-    const primaryColor = Color(0xFF41D6C3);
+    const background = Color(0xFF071C24);
+    const primary = Color(0xFF41D6C3);
 
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: background,
       appBar: AppBar(
-        backgroundColor: backgroundColor,
+        backgroundColor: background,
         foregroundColor: Colors.white,
         elevation: 0,
         title: const Text("สมัครสมาชิก"),
@@ -45,6 +105,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
             padding: const EdgeInsets.all(24),
             child: Column(
               children: [
+                TextField(
+                  controller: nameController,
+                  style: const TextStyle(color: Colors.white),
+                  decoration: InputDecoration(
+                    labelText: "ชื่อ",
+                    labelStyle: const TextStyle(color: Colors.white70),
+                    filled: true,
+                    fillColor: const Color(0xFF0C2731),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
                 TextField(
                   controller: emailController,
                   keyboardType: TextInputType.emailAddress,
@@ -88,8 +162,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
                 const SizedBox(height: 20),
                 TextField(
-                  controller: confirmController,
-                  obscureText: _obscureConfirm,
+                  controller: confirmPasswordController,
+                  obscureText: _obscureConfirmPassword,
                   style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                     labelText: "ยืนยันรหัสผ่าน",
@@ -101,72 +175,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _obscureConfirm
+                        _obscureConfirmPassword
                             ? Icons.visibility_off
                             : Icons.visibility,
                       ),
                       onPressed: () {
                         setState(() {
-                          _obscureConfirm = !_obscureConfirm;
+                          _obscureConfirmPassword = !_obscureConfirmPassword;
                         });
                       },
                     ),
                   ),
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 35),
                 SizedBox(
                   width: double.infinity,
-                  height: 50,
+                  height: 52,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: primaryColor,
+                      backgroundColor: primary,
                     ),
-                    onPressed: auth.loading
-                        ? null
-                        : () async {
-                            if (passwordController.text !=
-                                confirmController.text) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("รหัสผ่านไม่ตรงกัน"),
-                                ),
-                              );
-                              return;
-                            }
-
-                            try {
-                              await auth.register(
-                                emailController.text.trim(),
-                                passwordController.text,
-                              );
-
-                              if (!mounted) return;
-
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("สมัครสมาชิกสำเร็จ"),
-                                ),
-                              );
-
-                              Navigator.pop(context);
-                            } catch (e) {
-                              if (!mounted) return;
-
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(e.toString()),
-                                ),
-                              );
-                            }
-                          },
+                    onPressed: auth.loading ? null : () => _register(auth),
                     child: auth.loading
-                        ? const SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 2,
-                            ),
+                        ? const CircularProgressIndicator(
+                            color: Colors.white,
                           )
                         : const Text(
                             "สมัครสมาชิก",
