@@ -39,24 +39,18 @@ class SmartEnergyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => AuthProvider(),
         ),
-
         ChangeNotifierProvider(
           create: (_) => DeviceProvider(),
         ),
-
         ChangeNotifierProvider(
           create: (_) => EnergyProvider(),
         ),
-
         ChangeNotifierProvider(
           create: (_) => NotificationProvider(),
         ),
-
         ChangeNotifierProvider(
           create: (_) => ReportProvider(),
         ),
-
-        // MQTT
         ChangeNotifierProvider(
           create: (_) => MQTTProvider(),
         ),
@@ -99,7 +93,9 @@ class AuthGate extends StatelessWidget {
           );
         }
 
-        if (auth.user != null) {
+        // Firebase Current User
+
+        if (auth.isLoggedIn) {
           final mqtt = context.read<MQTTProvider>();
 
           if (!mqtt.connected) {

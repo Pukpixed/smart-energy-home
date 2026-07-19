@@ -57,9 +57,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     try {
       await auth.register(
-        name,
-        email,
-        password,
+        name: name,
+        email: email,
+        password: password,
       );
 
       if (!mounted) return;

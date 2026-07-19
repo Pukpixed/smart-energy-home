@@ -141,8 +141,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           : () async {
                               try {
                                 final role = await auth.login(
-                                  emailController.text.trim(),
-                                  passwordController.text,
+                                  email: emailController.text.trim(),
+                                  password: passwordController.text,
                                 );
 
                                 if (!mounted) return;

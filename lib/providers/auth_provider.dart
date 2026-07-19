@@ -1,118 +1,116 @@
-import 'dart:async';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../services/auth_service.dart';
 
 class AuthProvider extends ChangeNotifier {
-  final AuthService _authService = AuthService();
+  final AuthService _service = AuthService();
 
-  User? _user;
-  bool _loading = false;
+  bool loading = false;
 
-  User? get user => _user;
-  bool get loading => _loading;
-  String? get uid => _user?.uid;
+  // ==========================
+  // Current User
+  // ==========================
 
-  late final StreamSubscription<User?> _authSubscription;
+  User? get user => _service.currentUser;
 
-  AuthProvider() {
-    _user = _authService.currentUser;
+  bool get isLoggedIn => _service.currentUser != null;
 
-    _authSubscription = _authService.userStream.listen((user) {
-      _user = user;
-      _loading = false;
-      notifyListeners();
-    });
-  }
+  // ==========================
+  // Register
+  // ==========================
 
-  /// ============================
-  /// Login
-  /// ============================
-  Future<String> login(
-    String email,
-    String password,
-  ) async {
-    _loading = true;
-    notifyListeners();
-
+  Future<bool> register({
+    required String name,
+    required String email,
+    required String password,
+  }) async {
     try {
-      return await _authService.login(
-        email,
-        password,
+      loading = true;
+      notifyListeners();
+
+      await _service.register(
+        name: name,
+        email: email,
+        password: password,
       );
+
+      return true;
+    } catch (e) {
+      return false;
     } finally {
-      _loading = false;
+      loading = false;
       notifyListeners();
     }
   }
 
-  /// ============================
-  /// Register
-  /// ============================
-  Future<void> register(
-    String name,
-    String email,
-    String password,
-  ) async {
-    _loading = true;
+  // ==========================
+  // Login
+  // ==========================
+
+  Future<String> login({
+    required String email,
+    required String password,
+  }) async {
+    loading = true;
     notifyListeners();
 
     try {
-      await _authService.register(
-        name,
-        email,
-        password,
+      final user = await _service.login(
+        email: email,
+        password: password,
       );
+
+      final role = await _service.getUserRole(
+        user!.uid,
+      );
+
+      notifyListeners();
+
+      return role;
     } finally {
-      _loading = false;
+      loading = false;
       notifyListeners();
     }
   }
 
-  /// ============================
-  /// Login Google
-  /// ============================
+  // ==========================
+  // Google Login
+  // ==========================
+
   Future<String> signInWithGoogle() async {
-    _loading = true;
+    loading = true;
     notifyListeners();
 
     try {
-      return await _authService.signInWithGoogle();
+      final user = await _service.signInWithGoogle();
+
+      if (user == null) {
+        throw Exception(
+          "ยกเลิก Google Login",
+        );
+      }
+
+      final role = await _service.getUserRole(
+        user.uid,
+      );
+
+      notifyListeners();
+
+      return role;
     } finally {
-      _loading = false;
+      loading = false;
       notifyListeners();
     }
   }
 
-  /// ============================
-  /// Logout
-  /// ============================
+  // ==========================
+  // Logout
+  // ==========================
+
   Future<void> logout() async {
-    _loading = true;
+    await _service.logout();
+
     notifyListeners();
-
-    try {
-      await _authService.logout();
-    } finally {
-      _loading = false;
-      notifyListeners();
-    }
-  }
-
-  /// ============================
-  /// Refresh User
-  /// ============================
-  Future<void> reloadUser() async {
-    await _user?.reload();
-    _user = _authService.currentUser;
-    notifyListeners();
-  }
-
-  @override
-  void dispose() {
-    _authSubscription.cancel();
-    super.dispose();
   }
 }
