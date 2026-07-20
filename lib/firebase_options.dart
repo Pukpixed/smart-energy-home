@@ -41,50 +41,48 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBgxugMVJVcAenpdFRthmymU8kPcpXi-x4',
-    appId: '1:585897514589:web:3bd0e0eecfa61e66e7dfb4',
-    messagingSenderId: '585897514589',
-    projectId: 'smart-energy-home-fd036',
-    authDomain: 'smart-energy-home-fd036.firebaseapp.com',
-    storageBucket: 'smart-energy-home-fd036.firebasestorage.app',
-    measurementId: 'G-QMZ1BE9HWK',
+    apiKey: 'AIzaSyC8Ty3zTkvoSBNtEdkp8cvbHRxI_VxZ8uQ',
+    appId: '1:1067405232898:web:9e1cf9b4e6f6b0c9a6901b',
+    messagingSenderId: '1067405232898',
+    projectId: 'smart-energy-home-app',
+    authDomain: 'smart-energy-home-app.firebaseapp.com',
+    storageBucket: 'smart-energy-home-app.firebasestorage.app',
+    measurementId: 'G-6G292BQKX1',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDW86s24m66-jkpbr9iwpHxsKINb-3dicE',
-    appId: '1:585897514589:android:9089c5eb0a0da545e7dfb4',
-    messagingSenderId: '585897514589',
-    projectId: 'smart-energy-home-fd036',
-    storageBucket: 'smart-energy-home-fd036.firebasestorage.app',
+    apiKey: 'AIzaSyAZgtY76azpnz_waH53lvTw19GCO5vLGBk',
+    appId: '1:1067405232898:android:a872ca8e81ba3eefa6901b',
+    messagingSenderId: '1067405232898',
+    projectId: 'smart-energy-home-app',
+    storageBucket: 'smart-energy-home-app.firebasestorage.app',
   );
-
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBSlptrW7JDx1SW6EENk_73xSS57qjJKRs',
-    appId: '1:585897514589:ios:02bb468bf8fc68f6e7dfb4',
-    messagingSenderId: '585897514589',
-    projectId: 'smart-energy-home-fd036',
-    storageBucket: 'smart-energy-home-fd036.firebasestorage.app',
-    iosClientId: '585897514589-40l21ao3rfl2eotrvuouchflnsnhfd08.apps.googleusercontent.com',
+    apiKey: 'AIzaSyCZyIBblL9zEh1xo1u6nKeJJm0DCFn-dO4',
+    appId: '1:1067405232898:ios:77f34ab348ebbb47a6901b',
+    messagingSenderId: '1067405232898',
+    projectId: 'smart-energy-home-app',
+    storageBucket: 'smart-energy-home-app.firebasestorage.app',
+    iosClientId: '1067405232898-3vulvtvboohfj4s8649tvtogk4k81lal.apps.googleusercontent.com',
     iosBundleId: 'com.example.smartEnergyHome',
   );
-
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBSlptrW7JDx1SW6EENk_73xSS57qjJKRs',
-    appId: '1:585897514589:ios:02bb468bf8fc68f6e7dfb4',
-    messagingSenderId: '585897514589',
-    projectId: 'smart-energy-home-fd036',
-    storageBucket: 'smart-energy-home-fd036.firebasestorage.app',
-    iosClientId: '585897514589-40l21ao3rfl2eotrvuouchflnsnhfd08.apps.googleusercontent.com',
+    apiKey: 'AIzaSyCZyIBblL9zEh1xo1u6nKeJJm0DCFn-dO4',
+    appId: '1:1067405232898:ios:77f34ab348ebbb47a6901b',
+    messagingSenderId: '1067405232898',
+    projectId: 'smart-energy-home-app',
+    storageBucket: 'smart-energy-home-app.firebasestorage.app',
+    iosClientId: '1067405232898-3vulvtvboohfj4s8649tvtogk4k81lal.apps.googleusercontent.com',
     iosBundleId: 'com.example.smartEnergyHome',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyBgxugMVJVcAenpdFRthmymU8kPcpXi-x4',
-    appId: '1:585897514589:web:eb2c8c20c5acbbdfe7dfb4',
-    messagingSenderId: '585897514589',
-    projectId: 'smart-energy-home-fd036',
-    authDomain: 'smart-energy-home-fd036.firebaseapp.com',
-    storageBucket: 'smart-energy-home-fd036.firebasestorage.app',
-    measurementId: 'G-WLGC24M5JL',
+    apiKey: 'AIzaSyC8Ty3zTkvoSBNtEdkp8cvbHRxI_VxZ8uQ',
+    appId: '1:1067405232898:web:b811c89c44ae139ca6901b',
+    messagingSenderId: '1067405232898',
+    projectId: 'smart-energy-home-app',
+    authDomain: 'smart-energy-home-app.firebaseapp.com',
+    storageBucket: 'smart-energy-home-app.firebasestorage.app',
+    measurementId: 'G-2W38MT7317',
   );
 }

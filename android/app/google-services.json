@@ -1,81 +1,37 @@
 {
   "project_info": {
-    "project_number": "585897514589",
-    "project_id": "smart-energy-home-fd036",
-    "storage_bucket": "smart-energy-home-fd036.firebasestorage.app"
+    "project_number": "1067405232898",
+    "project_id": "smart-energy-home-app",
+    "storage_bucket": "smart-energy-home-app.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:585897514589:android:9089c5eb0a0da545e7dfb4",
+        "mobilesdk_app_id": "1:1067405232898:android:a872ca8e81ba3eefa6901b",
         "android_client_info": {
           "package_name": "com.example.smart_energy_home"
         }
       },
       "oauth_client": [
         {
-          "client_id": "585897514589-o6hj56lcg64jrjeehgrlln0f82q19mb6.apps.googleusercontent.com",
+          "client_id": "1067405232898-l2auji1mtvp383dsq12793kmfjvt97ad.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDW86s24m66-jkpbr9iwpHxsKINb-3dicE"
+          "current_key": "AIzaSyAZgtY76azpnz_waH53lvTw19GCO5vLGBk"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "585897514589-o6hj56lcg64jrjeehgrlln0f82q19mb6.apps.googleusercontent.com",
+              "client_id": "1067405232898-l2auji1mtvp383dsq12793kmfjvt97ad.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "585897514589-40l21ao3rfl2eotrvuouchflnsnhfd08.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.smartEnergyHome"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:585897514589:android:9b12f9e4263fbecae7dfb4",
-        "android_client_info": {
-          "package_name": "com.joy.smartenergyhome"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "585897514589-h9n9gpuinl7jskobps3hest7qavtk4sj.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.joy.smartenergyhome",
-            "certificate_hash": "dd711b7426dd22a1dfd95ce3bd57dc1b268265e6"
-          }
-        },
-        {
-          "client_id": "585897514589-o6hj56lcg64jrjeehgrlln0f82q19mb6.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDW86s24m66-jkpbr9iwpHxsKINb-3dicE"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "585897514589-o6hj56lcg64jrjeehgrlln0f82q19mb6.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "585897514589-40l21ao3rfl2eotrvuouchflnsnhfd08.apps.googleusercontent.com",
+              "client_id": "1067405232898-3vulvtvboohfj4s8649tvtogk4k81lal.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
                 "bundle_id": "com.example.smartEnergyHome"

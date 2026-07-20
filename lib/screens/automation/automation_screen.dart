@@ -1,77 +1,65 @@
 import 'package:flutter/material.dart';
 
-class DeviceScreen extends StatefulWidget {
-  const DeviceScreen({super.key});
+class AutomationScreen extends StatefulWidget {
+  const AutomationScreen({super.key});
 
   @override
-  State<DeviceScreen> createState() => _DeviceScreenState();
+  State<AutomationScreen> createState() => _AutomationScreenState();
 }
 
-class _DeviceScreenState extends State<DeviceScreen> {
-  int _selectedCategory = 0;
-  int _selectedBottomIndex = 1;
+class _AutomationScreenState extends State<AutomationScreen> {
+  int _selectedTab = 0;
+  int _selectedBottomIndex = 3;
 
   static const Color backgroundColor = Color(0xFF071C24);
   static const Color cardColor = Color(0xFF102A33);
   static const Color primaryColor = Color(0xFF41D6C3);
   static const Color secondaryTextColor = Color(0xFF8FA8AE);
 
-  final List<String> _categories = const <String>[
-    'ทั้งหมด',
-    'ห้องนอน',
-    'ห้องครัว',
-    'ห้องนั่งเล่น',
-  ];
-
-  final List<DeviceItem> _devices = <DeviceItem>[
-    DeviceItem(
-      name: 'เครื่องปรับอากาศ',
-      room: 'ห้องนอน',
-      type: DeviceType.airConditioner,
-      isOn: true,
+  final List<AutomationRule> _rules = <AutomationRule>[
+    AutomationRule(
+      title: 'ออกจากบ้าน',
+      subtitle: 'ปิดเครื่องใช้ไฟฟ้า, ล็อกประตู',
+      icon: Icons.directions_walk_rounded,
+      isEnabled: true,
     ),
-    DeviceItem(
-      name: 'เครื่องทำน้ำอุ่น',
-      room: 'ห้องน้ำ',
-      type: DeviceType.waterHeater,
-      isOn: true,
+    AutomationRule(
+      title: 'กลับบ้าน',
+      subtitle: 'เปิดไฟห้องรับแขก, เปิดแอร์ 24°C',
+      icon: Icons.home_rounded,
+      isEnabled: true,
     ),
-    DeviceItem(
-      name: 'ไฟห้องครัว',
-      room: 'ห้องครัว',
-      type: DeviceType.light,
-      isOn: false,
+    AutomationRule(
+      title: 'ก่อนนอน',
+      subtitle: 'ปิดไฟ, ปิดแอร์, เปิดโหมดประหยัด',
+      icon: Icons.nightlight_round,
+      isEnabled: true,
     ),
-    DeviceItem(
-      name: 'ตู้เย็น',
-      room: 'ห้องครัว',
-      type: DeviceType.refrigerator,
-      isOn: true,
-    ),
-    DeviceItem(
-      name: 'เครื่องซักผ้า',
-      room: 'ห้องซักล้าง',
-      type: DeviceType.washingMachine,
-      isOn: false,
-    ),
-    DeviceItem(
-      name: 'ปลั๊กไฟห้องทำงาน',
-      room: 'ห้องทำงาน',
-      type: DeviceType.smartPlug,
-      isOn: true,
+    AutomationRule(
+      title: 'ประหยัดพลังงาน',
+      subtitle: 'ปิดอุปกรณ์เมื่อใช้พลังงานสูงเกินกำหนด',
+      icon: Icons.savings_outlined,
+      isEnabled: false,
     ),
   ];
 
-  List<DeviceItem> get _filteredDevices {
-    if (_selectedCategory == 0) {
-      return _devices;
-    }
+  final List<AutomationRule> _schedules = <AutomationRule>[
+    AutomationRule(
+      title: 'เปิดแอร์ตอนเย็น',
+      subtitle: 'ทุกวัน เวลา 18:00 น.',
+      icon: Icons.schedule_rounded,
+      isEnabled: true,
+    ),
+    AutomationRule(
+      title: 'ปิดไฟหน้าบ้าน',
+      subtitle: 'ทุกวัน เวลา 06:00 น.',
+      icon: Icons.lightbulb_outline_rounded,
+      isEnabled: true,
+    ),
+  ];
 
-    final String selectedRoom = _categories[_selectedCategory];
-
-    return _devices
-        .where((DeviceItem device) => device.room == selectedRoom)
-        .toList();
+  List<AutomationRule> get _currentItems {
+    return _selectedTab == 0 ? _rules : _schedules;
   }
 
   @override
@@ -86,10 +74,10 @@ class _DeviceScreenState extends State<DeviceScreen> {
           onPressed: () {
             Navigator.maybePop(context);
           },
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: const Icon(Icons.menu_rounded),
         ),
         title: const Text(
-          'อุปกรณ์ทั้งหมด',
+          'อัตโนมัติ',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w700,
@@ -97,8 +85,8 @@ class _DeviceScreenState extends State<DeviceScreen> {
         ),
         actions: [
           IconButton(
-            tooltip: 'เพิ่มอุปกรณ์',
-            onPressed: _showAddDeviceDialog,
+            tooltip: 'เพิ่มกฎอัตโนมัติ',
+            onPressed: _showAddAutomationDialog,
             icon: const Icon(
               Icons.add_rounded,
               color: Colors.white,
@@ -110,19 +98,19 @@ class _DeviceScreenState extends State<DeviceScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            _buildCategoryTabs(),
-            const SizedBox(height: 8),
+            _buildTabs(),
+            const SizedBox(height: 10),
             Expanded(
-              child: _filteredDevices.isEmpty
+              child: _currentItems.isEmpty
                   ? _buildEmptyState()
                   : ListView.separated(
                       padding: const EdgeInsets.fromLTRB(
                         16,
-                        8,
+                        6,
                         16,
                         24,
                       ),
-                      itemCount: _filteredDevices.length,
+                      itemCount: _currentItems.length,
                       separatorBuilder: (_, __) {
                         return const SizedBox(height: 10);
                       },
@@ -130,10 +118,9 @@ class _DeviceScreenState extends State<DeviceScreen> {
                         BuildContext context,
                         int index,
                       ) {
-                        final DeviceItem device =
-                            _filteredDevices[index];
-
-                        return _buildDeviceCard(device);
+                        return _buildAutomationCard(
+                          _currentItems[index],
+                        );
                       },
                     ),
             ),
@@ -144,67 +131,78 @@ class _DeviceScreenState extends State<DeviceScreen> {
     );
   }
 
-  Widget _buildCategoryTabs() {
-    return SizedBox(
-      height: 46,
-      child: ListView.separated(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 4,
-        ),
-        scrollDirection: Axis.horizontal,
-        itemCount: _categories.length,
-        separatorBuilder: (_, __) {
-          return const SizedBox(width: 8);
-        },
-        itemBuilder: (
-          BuildContext context,
-          int index,
-        ) {
-          final bool isSelected = _selectedCategory == index;
+  Widget _buildTabs() {
+    const List<String> tabs = <String>[
+      'สถานการณ์',
+      'ตั้งเวลา',
+    ];
 
-          return ChoiceChip(
-            selected: isSelected,
-            showCheckmark: false,
-            label: Text(_categories[index]),
-            labelStyle: TextStyle(
-              color: isSelected
-                  ? backgroundColor
-                  : secondaryTextColor,
-              fontSize: 12,
-              fontWeight: isSelected
-                  ? FontWeight.w700
-                  : FontWeight.w500,
-            ),
-            selectedColor: primaryColor,
-            backgroundColor: cardColor,
-            side: BorderSide(
-              color: isSelected
-                  ? primaryColor
-                  : Colors.white.withValues(alpha: 0.08),
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            onSelected: (_) {
-              setState(() {
-                _selectedCategory = index;
-              });
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Container(
+        height: 42,
+        padding: const EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          color: cardColor,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Row(
+          children: List<Widget>.generate(
+            tabs.length,
+            (int index) {
+              final bool isSelected = _selectedTab == index;
+
+              return Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedTab = index;
+                    });
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 180),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? primaryColor.withValues(alpha: 0.14)
+                          : Colors.transparent,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: isSelected
+                            ? primaryColor
+                            : Colors.transparent,
+                      ),
+                    ),
+                    child: Text(
+                      tabs[index],
+                      style: TextStyle(
+                        color: isSelected
+                            ? primaryColor
+                            : secondaryTextColor,
+                        fontSize: 12,
+                        fontWeight: isSelected
+                            ? FontWeight.w700
+                            : FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+              );
             },
-          );
-        },
+          ),
+        ),
       ),
     );
   }
 
-  Widget _buildDeviceCard(DeviceItem device) {
+  Widget _buildAutomationCard(AutomationRule rule) {
     return Material(
       color: cardColor,
       borderRadius: BorderRadius.circular(14),
       child: InkWell(
         borderRadius: BorderRadius.circular(14),
         onTap: () {
-          _showDeviceDetails(device);
+          _showAutomationDetails(rule);
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(
@@ -217,14 +215,14 @@ class _DeviceScreenState extends State<DeviceScreen> {
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  color: device.isOn
+                  color: rule.isEnabled
                       ? primaryColor.withValues(alpha: 0.14)
                       : Colors.white.withValues(alpha: 0.06),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
-                  _iconForDevice(device.type),
-                  color: device.isOn
+                  rule.icon,
+                  color: rule.isEnabled
                       ? primaryColor
                       : secondaryTextColor,
                   size: 23,
@@ -236,7 +234,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      device.name,
+                      rule.title,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
@@ -247,14 +245,13 @@ class _DeviceScreenState extends State<DeviceScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      device.isOn
-                          ? '${device.room} • กำลังทำงาน'
-                          : '${device.room} • ปิด',
-                      style: TextStyle(
-                        color: device.isOn
-                            ? primaryColor
-                            : secondaryTextColor,
+                      rule.subtitle,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: secondaryTextColor,
                         fontSize: 11,
+                        height: 1.35,
                       ),
                     ),
                   ],
@@ -263,7 +260,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
               Transform.scale(
                 scale: 0.85,
                 child: Switch(
-                  value: device.isOn,
+                  value: rule.isEnabled,
                   activeTrackColor: primaryColor,
                   activeThumbColor: Colors.white,
                   inactiveTrackColor:
@@ -272,19 +269,19 @@ class _DeviceScreenState extends State<DeviceScreen> {
                       const Color(0xFF9BA9AC),
                   onChanged: (bool value) {
                     setState(() {
-                      device.isOn = value;
+                      rule.isEnabled = value;
                     });
 
                     ScaffoldMessenger.of(context)
                       ..hideCurrentSnackBar()
                       ..showSnackBar(
                         SnackBar(
+                          behavior: SnackBarBehavior.floating,
                           content: Text(
                             value
-                                ? 'เปิด ${device.name} แล้ว'
-                                : 'ปิด ${device.name} แล้ว',
+                                ? 'เปิดใช้งาน ${rule.title} แล้ว'
+                                : 'ปิดใช้งาน ${rule.title} แล้ว',
                           ),
-                          behavior: SnackBarBehavior.floating,
                         ),
                       );
                   },
@@ -303,13 +300,13 @@ class _DeviceScreenState extends State<DeviceScreen> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            Icons.devices_other_rounded,
+            Icons.auto_awesome_motion_outlined,
             color: secondaryTextColor,
-            size: 48,
+            size: 50,
           ),
           SizedBox(height: 12),
           Text(
-            'ไม่พบอุปกรณ์ในห้องนี้',
+            'ยังไม่มีกฎอัตโนมัติ',
             style: TextStyle(
               color: secondaryTextColor,
               fontSize: 14,
@@ -363,9 +360,9 @@ class _DeviceScreenState extends State<DeviceScreen> {
               label: 'สถิติ',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.notifications_none_rounded),
-              activeIcon: Icon(Icons.notifications_rounded),
-              label: 'แจ้งเตือน',
+              icon: Icon(Icons.auto_awesome_motion_outlined),
+              activeIcon: Icon(Icons.auto_awesome_motion_rounded),
+              label: 'อัตโนมัติ',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.settings_outlined),
@@ -388,15 +385,15 @@ class _DeviceScreenState extends State<DeviceScreen> {
         Navigator.maybePop(context);
         break;
       case 1:
-        setState(() {
-          _selectedBottomIndex = 1;
-        });
+        _showPageNotReady('หน้าอุปกรณ์');
         break;
       case 2:
         _showPageNotReady('หน้าสถิติ');
         break;
       case 3:
-        _showPageNotReady('หน้าแจ้งเตือน');
+        setState(() {
+          _selectedBottomIndex = 3;
+        });
         break;
       case 4:
         _showPageNotReady('หน้าตั้งค่า');
@@ -415,11 +412,10 @@ class _DeviceScreenState extends State<DeviceScreen> {
       );
   }
 
-  Future<void> _showAddDeviceDialog() async {
-    final TextEditingController nameController =
+  Future<void> _showAddAutomationDialog() async {
+    final TextEditingController titleController =
         TextEditingController();
-
-    final TextEditingController roomController =
+    final TextEditingController subtitleController =
         TextEditingController();
 
     final bool? shouldAdd = await showDialog<bool>(
@@ -431,7 +427,7 @@ class _DeviceScreenState extends State<DeviceScreen> {
             borderRadius: BorderRadius.circular(18),
           ),
           title: const Text(
-            'เพิ่มอุปกรณ์',
+            'เพิ่มกฎอัตโนมัติ',
             style: TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
@@ -441,10 +437,10 @@ class _DeviceScreenState extends State<DeviceScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: nameController,
+                controller: titleController,
                 style: const TextStyle(color: Colors.white),
                 decoration: const InputDecoration(
-                  labelText: 'ชื่ออุปกรณ์',
+                  labelText: 'ชื่อกฎ',
                   labelStyle: TextStyle(
                     color: secondaryTextColor,
                   ),
@@ -452,10 +448,11 @@ class _DeviceScreenState extends State<DeviceScreen> {
               ),
               const SizedBox(height: 12),
               TextField(
-                controller: roomController,
+                controller: subtitleController,
+                maxLines: 2,
                 style: const TextStyle(color: Colors.white),
                 decoration: const InputDecoration(
-                  labelText: 'ชื่อห้อง',
+                  labelText: 'รายละเอียด',
                   labelStyle: TextStyle(
                     color: secondaryTextColor,
                   ),
@@ -485,29 +482,35 @@ class _DeviceScreenState extends State<DeviceScreen> {
       },
     );
 
-    final String name = nameController.text.trim();
-    final String room = roomController.text.trim();
+    final String title = titleController.text.trim();
+    final String subtitle = subtitleController.text.trim();
 
-    nameController.dispose();
-    roomController.dispose();
+    titleController.dispose();
+    subtitleController.dispose();
 
-    if (shouldAdd != true || name.isEmpty || room.isEmpty) {
+    if (shouldAdd != true || title.isEmpty || subtitle.isEmpty) {
       return;
     }
 
     setState(() {
-      _devices.add(
-        DeviceItem(
-          name: name,
-          room: room,
-          type: DeviceType.smartPlug,
-          isOn: false,
-        ),
+      final AutomationRule newRule = AutomationRule(
+        title: title,
+        subtitle: subtitle,
+        icon: _selectedTab == 0
+            ? Icons.auto_awesome_motion_rounded
+            : Icons.schedule_rounded,
+        isEnabled: true,
       );
+
+      if (_selectedTab == 0) {
+        _rules.add(newRule);
+      } else {
+        _schedules.add(newRule);
+      }
     });
   }
 
-  void _showDeviceDetails(DeviceItem device) {
+  void _showAutomationDetails(AutomationRule rule) {
     showModalBottomSheet<void>(
       context: context,
       backgroundColor: cardColor,
@@ -538,22 +541,23 @@ class _DeviceScreenState extends State<DeviceScreen> {
                 ),
                 const SizedBox(height: 20),
                 Icon(
-                  _iconForDevice(device.type),
+                  rule.icon,
                   color: primaryColor,
                   size: 42,
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  device.name,
+                  rule.title,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 8),
                 Text(
-                  device.room,
+                  rule.subtitle,
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: secondaryTextColor,
                     fontSize: 13,
@@ -561,11 +565,11 @@ class _DeviceScreenState extends State<DeviceScreen> {
                 ),
                 const SizedBox(height: 18),
                 Text(
-                  device.isOn
-                      ? 'สถานะ: กำลังทำงาน'
-                      : 'สถานะ: ปิด',
+                  rule.isEnabled
+                      ? 'สถานะ: เปิดใช้งาน'
+                      : 'สถานะ: ปิดใช้งาน',
                   style: TextStyle(
-                    color: device.isOn
+                    color: rule.isEnabled
                         ? primaryColor
                         : secondaryTextColor,
                   ),
@@ -577,44 +581,18 @@ class _DeviceScreenState extends State<DeviceScreen> {
       },
     );
   }
-
-  IconData _iconForDevice(DeviceType type) {
-    switch (type) {
-      case DeviceType.airConditioner:
-        return Icons.ac_unit_rounded;
-      case DeviceType.waterHeater:
-        return Icons.water_drop_outlined;
-      case DeviceType.light:
-        return Icons.lightbulb_outline_rounded;
-      case DeviceType.refrigerator:
-        return Icons.kitchen_rounded;
-      case DeviceType.washingMachine:
-        return Icons.local_laundry_service_outlined;
-      case DeviceType.smartPlug:
-        return Icons.power_outlined;
-    }
-  }
 }
 
-enum DeviceType {
-  airConditioner,
-  waterHeater,
-  light,
-  refrigerator,
-  washingMachine,
-  smartPlug,
-}
+class AutomationRule {
+  final String title;
+  final String subtitle;
+  final IconData icon;
+  bool isEnabled;
 
-class DeviceItem {
-  final String name;
-  final String room;
-  final DeviceType type;
-  bool isOn;
-
-  DeviceItem({
-    required this.name,
-    required this.room,
-    required this.type,
-    required this.isOn,
+  AutomationRule({
+    required this.title,
+    required this.subtitle,
+    required this.icon,
+    required this.isEnabled,
   });
 }
